@@ -1,0 +1,20 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Build output
+out/
+build/
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
