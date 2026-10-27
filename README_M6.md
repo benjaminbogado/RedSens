@@ -207,3 +207,38 @@ Pendiente a cargo de M6, al disponer de las clases del equipo:
 
 Las estructuras de M1, M2 y M5 las implementan sus responsables.
 M6 utiliza esas implementaciones para ejecutar los experimentos.
+
+## Evidencias de ejecución — Grupo 3
+
+Entorno de Luca: Java 24.0.2, Windows 11 amd64.
+Semilla: 3026.
+
+Resultados guardados en:
+
+- resultados/verificacion-m6.txt: 10.000 códigos únicos,
+  igualdad de datos con la misma semilla y diferencias con otra.
+  Incluye frecuencias observadas y esperadas de batería.
+- resultados/limites-m6.txt: acepta 0, 1 y 10.000 estaciones;
+  rechaza -1 y 10.001.
+- resultados/mediciones-m6.txt: verifica 5.000 líneas,
+  formato correcto y reproducibilidad del archivo.
+- resultados/experimento-m2-luca.txt: ejecución de la comparación
+  ABB/AVL del equipo, con seis escenarios verificados.
+
+Las frecuencias de batería se analizan de forma descriptiva;
+no constituyen una prueba estadística formal de uniformidad.
+
+## Estado de los experimentos
+
+M2: comparación ABB/AVL ejecutada para 1.000, 5.000 y 10.000
+estaciones, con inserción ascendente y aleatoria.
+
+Pendientes para completar M6:
+
+- M1: comparación de hash lineal y cuadrática, con colisiones,
+  sondeos y rehashes. Requiere la implementación completa de M1.
+- M5: comparación de las dos implementaciones de Josephus para
+  los tamaños y valores de M exigidos por el enunciado.
+- Integración de los resultados y conclusiones en el informe final.
+
+Los tiempos medidos dependen del equipo y de la JVM.
