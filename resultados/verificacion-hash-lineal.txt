@@ -1,0 +1,1 @@
+﻿Tabla hash lineal: 15205 verificaciones OK
