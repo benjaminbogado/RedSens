@@ -1,0 +1,26 @@
+Experimento M2 — ABB vs AVL
+Java 21.0.13.0.2 · Mac OS X aarch64
+Semilla: 3026 · repeticiones de búsqueda: 10 (+3 de calentamiento)
+
+Prueba con pila por defecto (ABB, 10.000 ascendentes): no desbordó (altura 9999)
+El experimento corre en un hilo con pila de 512 MB.
+
+[OK] 1000 ascendente: 1000 estaciones en ambos árboles, 1000 búsquedas correctas, 102 ausentes devuelven null
+[OK] 1000 aleatorio: 1000 estaciones en ambos árboles, 1000 búsquedas correctas, 102 ausentes devuelven null
+[OK] 5000 ascendente: 5000 estaciones en ambos árboles, 5000 búsquedas correctas, 102 ausentes devuelven null
+[OK] 5000 aleatorio: 5000 estaciones en ambos árboles, 5000 búsquedas correctas, 102 ausentes devuelven null
+[OK] 10000 ascendente: 10000 estaciones en ambos árboles, 10000 búsquedas correctas, 2 ausentes devuelven null
+[OK] 10000 aleatorio: 10000 estaciones en ambos árboles, 10000 búsquedas correctas, 2 ausentes devuelven null
+
+| Estaciones | Orden | Altura ABB | Altura AVL | Búsqueda prom. ABB (ns) | Búsqueda prom. AVL (ns) | Búsqueda total ABB (ms) | Búsqueda total AVL (ms) | Construcción ABB (ms) | Construcción AVL (ms) |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1000 | ascendente | 999 | 9 | 1698.8 | 46.4 | 1.699 | 0.046 | 2.050 | 0.582 |
+| 1000 | aleatorio | 18 | 11 | 27.7 | 32.4 | 0.028 | 0.032 | 0.197 | 0.180 |
+| 5000 | ascendente | 4999 | 12 | 9395.0 | 72.6 | 46.975 | 0.363 | 69.121 | 0.308 |
+| 5000 | aleatorio | 28 | 14 | 42.3 | 39.9 | 0.212 | 0.200 | 0.429 | 0.574 |
+| 10000 | ascendente | 9999 | 13 | 18634.2 | 71.4 | 186.342 | 0.714 | 210.694 | 0.414 |
+| 10000 | aleatorio | 30 | 15 | 74.2 | 63.8 | 0.742 | 0.638 | 0.826 | 0.954 |
+
+Alturas contadas en aristas (árbol vacío = -1), igual en ABB y AVL.
+Búsqueda: todas las claves insertadas, en orden aleatorio fijo, mismo orden en ambos árboles;
+promedio de 10 repeticiones. Construcción: una inserción completa, medida aparte.
