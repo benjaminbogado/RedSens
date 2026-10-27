@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeMap;
 
 import redsens.modelo.Estacion;
 import redsens.modelo.TipoEstacion;
@@ -16,7 +15,7 @@ import redsens.modelo.TipoEstacion;
  */
 public class PruebaABB {
 
-    private static final long SEMILLA = 2026L;
+    private static final long SEMILLA = 3026L; // semilla asignada al grupo 3 (enunciado, sección 3)
 
     private static int ok = 0;
     private static int fallas = 0;
@@ -182,45 +181,47 @@ public class PruebaABB {
         }
         Collections.shuffle(disponibles, random);
 
+        // Referencia sin TreeMap (prohibido en M2): un arreglo indexado por número.
+        // Recorrerlo por índice da las estaciones ya ordenadas.
         ArbolBinarioBusqueda arbol = new ArbolBinarioBusqueda();
-        TreeMap<Integer, Estacion> referencia = new TreeMap<>();
+        Estacion[] referencia = new Estacion[10000];
         for (int i = 0; i < cantidad; i++) {
             Estacion e = crearEstacion(disponibles.get(i), random.nextInt(101));
             arbol.insertar(e);
-            referencia.put(e.getNumero(), e);
+            referencia[e.getNumero()] = e;
         }
 
         System.out.printf("  altura = %d, nodos = %d, hojas = %d%n",
                 arbol.altura(), arbol.cantidadNodos(), arbol.cantidadHojas());
         verificar("cantidadNodos() = " + cantidad, arbol.cantidadNodos() == cantidad);
-        verificar("inorden coincide con TreeMap de referencia",
-                numeros(arbol.inorden()).equals(new ArrayList<>(referencia.keySet())));
+        verificar("inorden coincide con la referencia ordenada",
+                arbol.inorden().equals(enRango(referencia, 0, 9999)));
         verificar("preorden y postorden tienen " + cantidad + " elementos",
                 arbol.preorden().size() == cantidad && arbol.postorden().size() == cantidad);
         // Un ABB aleatorio de 1000 nodos ronda altura ~25; muy lejos de 1000 (degenerado).
         verificar("altura razonable para datos aleatorios (< 60)", arbol.altura() < 60);
         verificar("todas las estaciones insertadas se encuentran",
-                referencia.keySet().stream().allMatch(n -> arbol.buscar(n) == referencia.get(n)));
+                enRango(referencia, 0, 9999).stream().allMatch(e -> arbol.buscar(e.getNumero()) == e));
         verificar("listarPorRango(2000, 4000) coincide con la referencia",
-                numeros(arbol.listarPorRango(2000, 4000))
-                        .equals(new ArrayList<>(referencia.subMap(2000, true, 4000, true).keySet())));
+                arbol.listarPorRango(2000, 4000).equals(enRango(referencia, 2000, 4000)));
         verificar("listarCriticas() coincide con la referencia",
                 arbol.listarCriticas().equals(criticas(referencia)));
 
         // Eliminar la mitad en orden aleatorio.
-        List<Integer> aEliminar = new ArrayList<>(referencia.keySet());
+        List<Integer> aEliminar = numeros(enRango(referencia, 0, 9999));
         Collections.shuffle(aEliminar, random);
         aEliminar = aEliminar.subList(0, cantidad / 2);
         boolean todasEliminadas = true;
         for (int n : aEliminar) {
             todasEliminadas &= eliminarSinError(arbol, n);
-            referencia.remove(n);
+            referencia[n] = null;
         }
+        int restantes = enRango(referencia, 0, 9999).size();
         verificar("se eliminaron " + aEliminar.size() + " estaciones aleatorias", todasEliminadas);
-        verificar("cantidadNodos() = " + referencia.size(), arbol.cantidadNodos() == referencia.size());
+        verificar("cantidadNodos() = " + restantes, arbol.cantidadNodos() == restantes);
         verificar("tamanio() coincide con cantidadNodos()", arbol.tamanio() == arbol.cantidadNodos());
         verificar("inorden tras eliminar coincide con la referencia",
-                numeros(arbol.inorden()).equals(new ArrayList<>(referencia.keySet())));
+                arbol.inorden().equals(enRango(referencia, 0, 9999)));
         verificar("las eliminadas ya no se encuentran",
                 aEliminar.stream().allMatch(n -> arbol.buscar(n) == null));
         verificar("listarCriticas() tras eliminar coincide con la referencia",
@@ -251,9 +252,20 @@ public class PruebaABB {
         return arbol;
     }
 
-    private static List<Estacion> criticas(TreeMap<Integer, Estacion> referencia) {
+    /** Estaciones presentes en la referencia con número en [desde, hasta], en orden. */
+    private static List<Estacion> enRango(Estacion[] referencia, int desde, int hasta) {
         List<Estacion> resultado = new ArrayList<>();
-        for (Estacion e : referencia.values()) {
+        for (int n = desde; n <= hasta; n++) {
+            if (referencia[n] != null) {
+                resultado.add(referencia[n]);
+            }
+        }
+        return resultado;
+    }
+
+    private static List<Estacion> criticas(Estacion[] referencia) {
+        List<Estacion> resultado = new ArrayList<>();
+        for (Estacion e : enRango(referencia, 0, 9999)) {
             if (e.esCritica()) {
                 resultado.add(e);
             }

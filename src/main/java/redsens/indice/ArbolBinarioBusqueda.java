@@ -71,6 +71,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private Nodo insertar(Nodo actual, Estacion estacion) {
+        // Caso base: subárbol vacío, acá va el nuevo nodo.
         if (actual == null) {
             return new Nodo(estacion);
         }
@@ -102,6 +103,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private Nodo buscar(Nodo actual, int numero) {
+        // Caso base: subárbol vacío, la estación no está.
         if (actual == null) {
             return null;
         }
@@ -142,6 +144,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private Nodo eliminar(Nodo actual, int numero) {
+        // Caso base: subárbol vacío, el número no existe.
         if (actual == null) {
             throw new IllegalArgumentException("No existe una estación con el número " + numero);
         }
@@ -173,6 +176,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private Nodo minimo(Nodo actual) {
+        // Caso base: sin hijo izquierdo, este es el mínimo.
         return actual.izquierdo == null ? actual : minimo(actual.izquierdo);
     }
 
@@ -193,6 +197,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private void inorden(Nodo actual, List<Estacion> resultado) {
+        // Caso base: subárbol vacío, no hay nada que recorrer.
         if (actual == null) {
             return;
         }
@@ -213,6 +218,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private void preorden(Nodo actual, List<Estacion> resultado) {
+        // Caso base: subárbol vacío, no hay nada que recorrer.
         if (actual == null) {
             return;
         }
@@ -233,6 +239,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private void postorden(Nodo actual, List<Estacion> resultado) {
+        // Caso base: subárbol vacío, no hay nada que recorrer.
         if (actual == null) {
             return;
         }
@@ -256,6 +263,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private int altura(Nodo actual) {
+        // Caso base: árbol vacío, altura -1 (así una hoja queda en 0).
         if (actual == null) {
             return -1;
         }
@@ -272,6 +280,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private int cantidadNodos(Nodo actual) {
+        // Caso base: árbol vacío, 0 nodos.
         if (actual == null) {
             return 0;
         }
@@ -288,9 +297,11 @@ public class ArbolBinarioBusqueda {
     }
 
     private int cantidadHojas(Nodo actual) {
+        // Caso base 1: árbol vacío, 0 hojas.
         if (actual == null) {
             return 0;
         }
+        // Caso base 2: el nodo no tiene hijos, cuenta como 1 hoja.
         if (actual.esHoja()) {
             return 1;
         }
@@ -321,6 +332,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private void listarPorRango(Nodo actual, int desde, int hasta, List<Estacion> resultado) {
+        // Caso base: subárbol vacío, no aporta estaciones.
         if (actual == null) {
             return;
         }
@@ -349,6 +361,7 @@ public class ArbolBinarioBusqueda {
     }
 
     private void listarCriticas(Nodo actual, List<Estacion> resultado) {
+        // Caso base: subárbol vacío, no aporta estaciones.
         if (actual == null) {
             return;
         }
