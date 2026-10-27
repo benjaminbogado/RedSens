@@ -190,14 +190,13 @@ Implementado y probado:
 - Generación y verificación de 5.000 mediciones.
 - Herramienta de medición de tiempos.
 - Experimento del AVL.
+- Experimento comparativo ABB/AVL: seis escenarios verificados.
 
 Pendiente a cargo de M6, al disponer de las clases del equipo:
 
 - Experimento M1: comparar hash lineal y cuadrática con
   10.000 estaciones, colisiones, sondeos de búsquedas
   exitosas y fallidas, y cantidad de rehashings.
-- Experimento M2 completo: comparar ABB y AVL con datos
-  ascendentes y aleatorios.
 - Experimento M5: comparar ambas versiones de Josephus
   para N = 1.000, 10.000 y 100.000, con al menos dos valores de M.
 - Reunir tablas, metodología y conclusiones en el informe
