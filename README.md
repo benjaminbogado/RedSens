@@ -25,6 +25,7 @@ Después de compilar:
 
 ```powershell
 java -cp out redsens.registro.PruebaTablaHash
+java -cp out redsens.registro.PruebaTablaHashCuadratica
 java -cp out redsens.indice.PruebaABB
 java -cp out redsens.indice.ComprobadorArbolAVL
 ```
@@ -33,6 +34,12 @@ El experimento independiente de M2 se ejecuta con:
 
 ```powershell
 java -cp out redsens.indice.ExperimentoArboles 3026
+```
+
+El experimento de M1 (lineal contra cuadrática) se ejecuta con:
+
+```powershell
+java -cp out redsens.registro.ExperimentoTablaHash 3026
 ```
 
 ## M1 lineal
@@ -72,3 +79,18 @@ jshell --class-path out ejemplos/m1-manual.jsh
 La sesión queda abierta para experimentar. Escribir `/exit` para salir.
 La [guía de estudio en PDF](output/pdf/guia-estudio-m1-lineal.pdf) explica
 el código línea por línea, las decisiones y la integración con el equipo.
+
+## M1 cuadrática y rehashing
+
+FRANCO agrega la exploración cuadrática, el umbral de carga, el rehashing y
+la comparación de estrategias sobre la `TablaHash` de FEDE. Los constructores
+de capacidad fija no cambian; para la tabla que crece sola:
+
+```java
+TablaHash registro = TablaHash.ampliable(17, EstrategiaExploracion.CUADRATICA);
+```
+
+Umbrales por defecto: 0,75 para lineal y 0,5 para cuadrática. Al superarlo,
+la tabla crece al primer primo mayor o igual al doble. Las decisiones, los
+resultados del experimento y su explicación están en
+[el informe de M1](resultados/informe-m1-tabla-hash.md).
