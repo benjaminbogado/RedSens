@@ -1,0 +1,7 @@
+estructura,cantidad,orden,altura,busquedas,mediana_lote_ns,promedio_ns_por_busqueda
+AVL,1000,ascendente,9,1000,252900,252.90
+AVL,1000,aleatorio,11,1000,168400,168.40
+AVL,5000,ascendente,12,5000,1090500,218.10
+AVL,5000,aleatorio,14,5000,800600,160.12
+AVL,10000,ascendente,13,10000,1762200,176.22
+AVL,10000,aleatorio,15,10000,2208700,220.87
