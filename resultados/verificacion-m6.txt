@@ -1,0 +1,22 @@
+﻿Grupo 3 - Semilla 3026
+Estaciones generadas: 10000
+Códigos únicos: OK
+Misma semilla, mismos datos: OK
+Semillas 3026 y 3027, datos distintos: OK
+
+Distribución de baterías:
+Intervalo | Observadas | Esperadas
+ 0- 9    | 1009       | 990.10
+10-19    |  973       | 990.10
+20-29    |  979       | 990.10
+30-39    |  955       | 990.10
+40-49    | 1005       | 990.10
+50-59    | 1006       | 990.10
+60-69    | 1028       | 990.10
+70-79    | 1012       | 990.10
+80-89    |  980       | 990.10
+90-99    |  961       | 990.10
+100      |   92       | 99.01
+
+Las frecuencias deben aproximarse a las esperadas;
+no tienen que ser exactamente iguales.

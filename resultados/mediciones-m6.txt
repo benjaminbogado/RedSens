@@ -1,0 +1,7 @@
+﻿Líneas generadas: 5000
+Formato de todas las líneas: OK
+Archivo reproducible: OK
+Ubicación: C:\Users\lucap\AED 2 TP\RedSens\datos\mediciones_grupo3.txt
+
+Primera medición:
+CBA-1079;2026-10-13;00:00;T=23.3;H=5;P=35.3;BAT=98

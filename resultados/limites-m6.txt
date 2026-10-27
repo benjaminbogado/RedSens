@@ -1,0 +1,7 @@
+﻿Generar 0 estaciones: OK
+Generar 1 estaciones: OK
+Generar 10000 estaciones: OK
+Rechazar cantidad -1: OK
+Rechazar cantidad 10001: OK
+
+Todas las pruebas de límites pasaron.
