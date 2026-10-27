@@ -1,0 +1,33 @@
+﻿RedSens · Experimento M1 (tabla hash)
+Semilla 3026 · capacidad inicial 17 · 10000 estaciones · Java 24.0.2 · Windows 11 amd64
+
+1. EXPERIMENTO OBLIGATORIO (umbral propio de cada estrategia)
+Estrategia  | Umbral | Colis. ins. | Sond. ins. | Rehash | Cap. final | λ final | Sond. éxito | Colis. éx. |   ns/búsq. | Fall. c/bor | Fall. s/bor
+-------------------------------------------------------------------------------------------------------------------------------------------------
+LINEAL      |   0,75 |       99993 |     109993 |    10 |     21911 |  0,456 |      2,296 |      1,296 |     1062,4 |     11,502 |      4,577
+CUADRATICA  |   0,50 |        9067 |      19067 |    10 |     21911 |  0,456 |      1,517 |      0,517 |      870,7 |      4,599 |      2,176
+
+2. CONTROL (ambas estrategias con umbral 0,5)
+Estrategia  | Umbral | Colis. ins. | Sond. ins. | Rehash | Cap. final | λ final | Sond. éxito | Colis. éx. |   ns/búsq. | Fall. c/bor | Fall. s/bor
+-------------------------------------------------------------------------------------------------------------------------------------------------
+LINEAL      |   0,50 |       20187 |      30187 |    10 |     21911 |  0,456 |      2,296 |      1,296 |     1270,7 |     11,502 |      4,577
+CUADRATICA  |   0,50 |        9067 |      19067 |    10 |     21911 |  0,456 |      1,517 |      0,517 |     1029,4 |      4,599 |      2,176
+
+3. BARRIDO DE FACTOR DE CARGA (capacidad fija 10007, sin rehashing)
+Promedio de sondeos por búsqueda. Teoría lineal (Knuth): exitosa ½(1+1/(1−λ)), no exitosa ½(1+1/(1−λ)²).
+Referencia sin agrupamiento (hashing uniforme): exitosa (1/λ)·ln(1/(1−λ)), no exitosa 1/(1−λ).
+
+λ     | LINEAL exitosa (teoría) | LINEAL fallida (teoría) | CUADR. exitosa (unif.)  | CUADR. fallida (unif.) 
+------------------------------------------------------------------------------------------------------------
+0,1   |     1,02 (    1,06)     |     1,04 (    1,12)     |     1,02 (    1,05)     |     1,04 (    1,11)    
+0,2   |     1,06 (    1,13)     |     1,12 (    1,28)     |     1,05 (    1,12)     |     1,11 (    1,25)    
+0,3   |     1,10 (    1,21)     |     1,31 (    1,52)     |     1,09 (    1,19)     |     1,25 (    1,43)    
+0,4   |     1,18 (    1,33)     |     1,70 (    1,89)     |     1,14 (    1,28)     |     1,47 (    1,67)    
+0,5   |     1,36 (    1,50)     |     2,80 (    2,50)     |     1,24 (    1,39)     |     1,87 (    2,00)    
+0,6   |     1,85 (    1,75)     |     5,86 (    3,62)     |     1,40 (    1,53)     |     2,44 (    2,50)    
+0,7   |     3,10 (    2,17)     |    19,30 (    6,06)     |     1,64 (    1,72)     |     4,00 (    3,33)    
+0,8   |     7,44 (    3,00)     |    66,40 (   13,00)     |     2,11 (    2,01)     |     7,12 (    5,00)    
+0,9   |    19,56 (    5,50)     |   199,09 (   50,50)     |     3,01 (    2,56)     |    15,01 (   10,00)    
+
+Para λ > 0,5 la cuadrática se corre igual, a modo de prueba: con m primo su garantía
+de encontrar casilla libre vale únicamente hasta λ = 0,5.

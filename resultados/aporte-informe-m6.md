@@ -168,3 +168,51 @@ del sistema operativo. Las mediciones son orientativas.
 Quedan pendientes los experimentos completos de M1 y M5,
 la integración desde el menú principal y la revisión
 del procesamiento de las mediciones con su módulo consumidor.
+
+## Resultado del experimento M1
+
+Se ejecutó ExperimentoTablaHash, desarrollado por Franco,
+utilizando GeneradorDatos de M6 con 10.000 estaciones,
+semilla 3026 y capacidad inicial 17.
+
+Las pruebas previas finalizaron con 15.205 verificaciones
+correctas de la tabla lineal y 96 verificaciones correctas
+de cuadrática y rehash, sin fallas.
+
+| Medida | Lineal | Cuadrática |
+|---|---:|---:|
+| Umbral de ampliación | 0,75 | 0,50 |
+| Colisiones durante inserciones externas | 99.993 | 9.067 |
+| Rehashes | 10 | 10 |
+| Capacidad final | 21.911 | 21.911 |
+| Sondeos promedio por búsqueda exitosa | 2,296 | 1,517 |
+| Sondeos por búsqueda fallida con borrados | 11,502 | 4,599 |
+| Sondeos por búsqueda fallida sin borrados | 4,577 | 2,176 |
+| Tiempo promedio por búsqueda exitosa (ns) | 1062,4 | 870,7 |
+
+Las reinserciones internas del rehash no se incluyen
+en los contadores de colisiones y sondeos.
+
+Para obtener claves ausentes se evaluaron dos escenarios:
+eliminar perezosamente 1.000 estaciones de la tabla completa
+y construir otra tabla con 9.000 estaciones, buscando
+las 1.000 restantes.
+
+La cuadrática requirió menos sondeos en los escenarios medidos.
+En la exploración lineal, los bloques contiguos ocupados
+producen agrupamiento primario y aumentan el costo de búsqueda.
+
+Los umbrales diferentes también influyen en las colisiones.
+Como control, se repitió la comparación con umbral 0,50
+en ambas estrategias: la lineal registró 20.187 colisiones
+y la cuadrática 9.067.
+
+Ambas estrategias realizaron diez ampliaciones y terminaron
+con la misma capacidad. Las marcas de borrado aumentaron
+los sondeos de las búsquedas fallidas.
+
+Los tiempos son orientativos y corresponden a esta ejecución.
+La salida completa está en resultados/experimento-m1-luca.txt.
+
+El experimento M1 queda ejecutado; su mención anterior
+como pendiente queda actualizada por esta sección.
