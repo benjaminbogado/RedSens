@@ -15,6 +15,12 @@ import redsens.indice.ArbolAVL;
 import redsens.indice.ArbolBinarioBusqueda;
 import redsens.modelo.Estacion;
 import redsens.modelo.TipoEstacion;
+import redsens.red.CaminosMinimos;
+import redsens.red.CargadorGrafo;
+import redsens.red.CorteRuta;
+import redsens.red.GrafoLocalidades;
+import redsens.red.PlanVisitas;
+import redsens.red.Recorridos;
 import redsens.registro.EstrategiaExploracion;
 import redsens.registro.TablaHash;
 import redsens.simulacion.ComprobadorM6;
@@ -29,6 +35,7 @@ public class Main {
     private TablaHash hashCuadratica = nuevaTabla(EstrategiaExploracion.CUADRATICA);
     private ArbolBinarioBusqueda abb = new ArbolBinarioBusqueda();
     private ArbolAVL avl = new ArbolAVL();
+    private GrafoLocalidades red;
 
     public static void main(String[] args) {
         new Main().ejecutar();
@@ -51,7 +58,8 @@ public class Main {
                 case 0 -> menuEstaciones();
                 case 1 -> menuM1();
                 case 2 -> menuM2();
-                case 3, 4, 5 -> System.out.println("Este módulo todavía no está disponible en esta versión.");
+                case 3 -> menuM3();
+                case 4, 5 -> System.out.println("Este módulo todavía no está disponible en esta versión.");
                 case 6 -> menuM6();
                 case 7 -> salir = true;
                 default -> System.out.println("Opción inválida. Elegí un número del menú.");
@@ -312,6 +320,163 @@ public class Main {
             System.out.printf("%d. Número: %d | Código: %s%n",
                     i + 1, estacion.getNumero(), estacion.getCodigo());
         }
+    }
+
+    // ------------------------------------------------------------------
+    // M3: grafos y recorridos
+    // ------------------------------------------------------------------
+
+    private static final String CONTROL_M3 = "Córdoba";
+
+    private void menuM3() {
+        if (red == null) {
+            cargarRed(CargadorGrafo.ARCHIVO_POR_DEFECTO.toString());
+        }
+        boolean volver = false;
+        while (!volver) {
+            System.out.println("\n--- M3: red vial (base " + PlanVisitas.BASE_GRUPO + ") ---");
+            System.out.println("1. Cargar red vial desde archivo");
+            System.out.println("2. Mostrar lista y matriz de adyacencia");
+            System.out.println("3. BFS: localidades alcanzables por niveles (tramos) desde la base");
+            System.out.println("4. DFS: verificar si la red es conexa");
+            System.out.println("5. Dijkstra desde la base: distancias y caminos");
+            System.out.println("6. Dijkstra de control desde " + CONTROL_M3);
+            System.out.println("7. Floyd: distancias mínimas entre todos los pares");
+            System.out.println("8. Simular el corte de una ruta");
+            System.out.println("9. Plan de visitas para las estaciones críticas (reporte M2)");
+            System.out.println("0. Volver al menú principal");
+            int opcion = leerEntero("Opción: ");
+            if (red == null && opcion >= 2 && opcion <= 9) {
+                System.out.println("Primero cargá una red vial (opción 1).");
+                continue;
+            }
+            switch (opcion) {
+                case 1 -> {
+                    System.out.print("Ruta del archivo [" + CargadorGrafo.ARCHIVO_POR_DEFECTO + "]: ");
+                    String ruta = entrada.nextLine().trim();
+                    cargarRed(ruta.isEmpty() ? CargadorGrafo.ARCHIVO_POR_DEFECTO.toString() : ruta);
+                }
+                case 2 -> {
+                    System.out.println("\nLista de adyacencia:");
+                    System.out.print(red.textoListaAdyacencia());
+                    System.out.println("\nMatriz de adyacencia (km, '-' = sin ruta directa):");
+                    System.out.print(red.textoMatrizAdyacencia());
+                }
+                case 3 -> {
+                    List<List<String>> niveles = Recorridos.nivelesBfs(red, PlanVisitas.BASE_GRUPO);
+                    for (int k = 1; k < niveles.size(); k++) {
+                        System.out.printf("A %d tramo%s: %s%n", k, k == 1 ? "" : "s", String.join(", ", niveles.get(k)));
+                    }
+                }
+                case 4 -> {
+                    System.out.println("DFS: " + String.join(" > ", Recorridos.dfs(red, PlanVisitas.BASE_GRUPO)));
+                    List<String> faltan = Recorridos.inalcanzables(red, PlanVisitas.BASE_GRUPO);
+                    System.out.println(faltan.isEmpty() ? "La red es conexa: el DFS visitó las "
+                            + red.cantidadLocalidades() + " localidades."
+                            : "La red NO es conexa. Sin acceso desde la base: " + String.join(", ", faltan));
+                }
+                case 5 -> mostrarDijkstra(PlanVisitas.BASE_GRUPO);
+                case 6 -> mostrarDijkstra(CONTROL_M3);
+                case 7 -> {
+                    for (int i = 0; i < red.cantidadLocalidades(); i++) {
+                        System.out.printf("[%2d] %s%n", i, red.nombreDe(i));
+                    }
+                    System.out.print(CaminosMinimos.floyd(red).textoMatriz());
+                }
+                case 8 -> simularCorte();
+                case 9 -> planCriticas();
+                case 0 -> volver = true;
+                default -> System.out.println("Opción inválida.");
+            }
+        }
+    }
+
+    private void cargarRed(String ruta) {
+        try {
+            GrafoLocalidades cargada = CargadorGrafo.cargar(Path.of(ruta));
+            if (!cargada.existeLocalidad(PlanVisitas.BASE_GRUPO)) {
+                throw new IllegalArgumentException("la red no incluye la base " + PlanVisitas.BASE_GRUPO);
+            }
+            red = cargada;
+            System.out.println("Red cargada: " + red.cantidadLocalidades() + " localidades y "
+                    + red.cantidadRutas() + " tramos.");
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("No se pudo cargar la red vial: " + e.getMessage());
+        }
+    }
+
+    private void mostrarDijkstra(String origen) {
+        if (!red.existeLocalidad(origen)) {
+            System.out.println("La red cargada no incluye " + origen + ".");
+            return;
+        }
+        CaminosMinimos.ResultadoDijkstra resultado = CaminosMinimos.dijkstra(red, origen);
+        System.out.println("Desde " + origen + ":");
+        for (String destino : red.getNombres()) {
+            if (resultado.hayCamino(destino)) {
+                System.out.printf("  %-17s %4d km  %s%n", destino, resultado.distanciaA(destino),
+                        String.join(" > ", resultado.caminoA(destino)));
+            } else {
+                System.out.printf("  %-17s sin camino%n", destino);
+            }
+        }
+    }
+
+    /** Muestra las localidades numeradas y devuelve la elegida, o null. */
+    private String elegirLocalidad(String mensaje) {
+        for (int i = 0; i < red.cantidadLocalidades(); i++) {
+            System.out.printf("%2d. %s%n", i, red.nombreDe(i));
+        }
+        int indice = leerEntero(mensaje);
+        if (indice < 0 || indice >= red.cantidadLocalidades()) {
+            System.out.println("Número de localidad inválido.");
+            return null;
+        }
+        return red.nombreDe(indice);
+    }
+
+    private void simularCorte() {
+        String origen = elegirLocalidad("Un extremo de la ruta: ");
+        if (origen == null) {
+            return;
+        }
+        String destino = elegirLocalidad("El otro extremo: ");
+        if (destino == null) {
+            return;
+        }
+        try {
+            CorteRuta corte = CorteRuta.simular(red, PlanVisitas.BASE_GRUPO, origen, destino);
+            System.out.print(corte.texto());
+            System.out.println("(La red cargada no cambia: el corte se simula sobre una copia.)");
+        } catch (IllegalArgumentException e) {
+            System.out.println("No se pudo simular: " + e.getMessage());
+        }
+    }
+
+    /** Integración M2 → M3: el reporte de críticas del AVL define qué localidades visitar. */
+    private void planCriticas() {
+        if (estaciones.isEmpty()) {
+            System.out.println("No hay estaciones cargadas (menú 0).");
+            return;
+        }
+        List<Estacion> criticas = avl.listarCriticas();
+        if (criticas.isEmpty()) {
+            System.out.println("No hay estaciones críticas: no hace falta salir.");
+            return;
+        }
+        List<String> localidades = new ArrayList<>();
+        List<String> fueraDeRed = new ArrayList<>();
+        for (String localidad : PlanVisitas.localidadesDe(criticas)) {
+            (red.existeLocalidad(localidad) ? localidades : fueraDeRed).add(localidad);
+        }
+        System.out.println(criticas.size() + " estaciones críticas en " + localidades.size() + " localidades: "
+                + String.join(", ", localidades));
+        if (!fueraDeRed.isEmpty()) {
+            System.out.println("Localidades del reporte que no están en la red: " + String.join(", ", fueraDeRed));
+        }
+        System.out.print(PlanVisitas.planificar(red, PlanVisitas.BASE_GRUPO, localidades).texto());
+        System.out.println("Criterio: vecino más cercano sobre la tabla de Floyd. No garantiza el óptimo:");
+        System.out.println("elige cada paso solo por cercanía y puede dejar localidades lejanas para el final.");
     }
 
     private void menuM6() {

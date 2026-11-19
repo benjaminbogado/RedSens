@@ -1,0 +1,106 @@
+
+--- 1. Construcción, lista y matriz de adyacencia ---
+[OK]    6 localidades
+[OK]    6 rutas
+[OK]    matriz A–B = 4
+[OK]    matriz simétrica B–A = 4
+[OK]    diagonal en 0
+[OK]    A–F sin ruta
+[OK]    lista de A tiene 2 rutas
+[OK]    lista de F vacía
+[OK]    lista y matriz coinciden
+
+--- 2. Validaciones ---
+[OK]    localidad repetida
+[OK]    localidad vacía
+[OK]    ruta repetida
+[OK]    ruta a sí misma
+[OK]    km no positivo
+[OK]    localidad inexistente
+[OK]    cortar ruta inexistente
+[OK]    Dijkstra con origen inexistente
+
+--- 3. Carga desde texto ---
+[OK]    crea localidades implícitas y recorta espacios
+[OK]    tipo de línea desconocido
+[OK]    faltan campos
+[OK]    km no numérico
+[OK]    km negativo
+[OK]    el error informa la línea
+
+--- 4. BFS y DFS ---
+[OK]    BFS desde A = A,B,C,D,E
+[OK]    DFS desde A = A,B,C,E,D
+[OK]    BFS lista = BFS matriz
+[OK]    DFS lista = DFS matriz
+[OK]    no es conexo (F aislada)
+[OK]    inalcanzables desde A = [F]
+[OK]    BFS desde F = [F]
+[OK]    niveles BFS: [A] [B,C] [D,E]
+
+--- 5. Dijkstra ---
+[OK]    A→A = 0
+[OK]    A→B = 3 (por C, no la directa de 4)
+[OK]    camino A→B = A,C,B
+[OK]    A→D = 8 por A,C,B,D
+[OK]    A→E = 9 por A,C,E
+[OK]    A→F sin camino
+
+--- 6. Floyd ---
+[OK]    B→E = 8 por B,D,E
+[OK]    simétrica E→B = 8
+[OK]    C→F infinito
+[OK]    no modifica la matriz del grafo
+[OK]    Floyd = Dijkstra para todos los pares
+
+--- 7. Corte de ruta ---
+[OK]    A→D pasa de 8 a 12
+[OK]    nuevo camino A,C,E,D
+[OK]    solo D cambia
+[OK]    el original no se modifica
+[OK]    la copia sí perdió la ruta
+[OK]    doble corte aísla D (F ya estaba aislada y no se cuenta)
+[OK]    corte que no aísla: lista vacía
+[OK]    puente detectado: solo C – D desconecta
+
+--- 8. Plan de visitas (vecino más cercano) ---
+[OK]    orden A,C,B,D,E,A
+[OK]    total 1+2+5+3+9 = 20 km
+[OK]    F informada sin acceso
+[OK]    tramo E→A expandido E,C,A
+[OK]    parcial: A,B,E,A
+[OK]    parcial: 3+8+9 = 20 km
+[OK]    solo la base: sin tramos
+
+--- 9. Red del enunciado (datos/red_vial.txt) con base San Francisco ---
+[OK]    12 localidades y 18 tramos
+[OK]    incluye la base
+[OK]    tramo Villa Carlos Paz – Cosquín = 24 km
+[OK]    no hay tramo directo Córdoba – Río Cuarto
+[OK]    lista y matriz coinciden
+[OK]    red conexa (DFS)
+[OK]    BFS/DFS: lista = matriz
+[OK]    BFS nivel 1 = Córdoba, Villa María
+[OK]    BFS nivel 2 = VCP, Alta Gracia, Jesús María, Río Tercero, Río Cuarto
+[OK]    BFS nivel 3 = Cosquín, Villa Dolores, Deán Funes
+[OK]    BFS nivel 4 = La Falda
+[OK]    control Córdoba→Río Cuarto = 212 por Río Tercero
+[OK]    control Córdoba→La Falda = 80 por VCP y Cosquín
+[OK]    San Francisco→Río Tercero = 220 por Villa María
+[OK]    San Francisco→Villa Dolores = 381
+[OK]    Floyd = Dijkstra para todos los pares
+[OK]    corte Córdoba – San Francisco: Córdoba pasa de 205 a 296 km
+[OK]    corte Córdoba – San Francisco: sigue conexa
+[OK]    ningún corte simple desconecta la red
+[OK]    doble corte: San Francisco queda aislada
+[OK]    plan sale y vuelve a la base
+[OK]    plan visita las 11 localidades una vez
+[OK]    plan completo = 1354 km
+[OK]    plan: suma de tramos = total
+
+--- 10. Integración M2 → M3 (reporte de críticas del AVL) ---
+[OK]    localidades sin repetir, en orden del reporte
+
+==============================================
+Resultado: 82 verificaciones OK, 0 fallas
+==============================================

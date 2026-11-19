@@ -28,6 +28,7 @@ java -cp out redsens.registro.PruebaTablaHash
 java -cp out redsens.registro.PruebaTablaHashCuadratica
 java -cp out redsens.indice.PruebaABB
 java -cp out redsens.indice.ComprobadorArbolAVL
+java -cp out redsens.red.PruebaGrafo
 ```
 
 El experimento independiente de M2 se ejecuta con:
@@ -94,3 +95,20 @@ Umbrales por defecto: 0,75 para lineal y 0,5 para cuadrática. Al superarlo,
 la tabla crece al primer primo mayor o igual al doble. Las decisiones, los
 resultados del experimento y su explicación están en
 [el informe de M1](resultados/informe-m1-tabla-hash.md).
+
+## M3 grafos y recorridos
+
+FRANCO implementa la red vial en `redsens.red` sin `HashMap` ni librerías de
+grafos: lista y matriz de adyacencia, BFS por niveles, DFS y conexidad,
+Dijkstra (base San Francisco y control desde Córdoba), Floyd, corte de un tramo
+y plan de visitas por vecino más cercano. El grafo del enunciado (12
+localidades, 18 tramos) se carga desde `datos/red_vial.txt`, por eso hay que
+ejecutar desde la raíz del repositorio. Está en la opción 3 del menú; la opción
+9 de ese submenú arma el plan con el reporte de críticas del AVL (M2).
+
+```powershell
+java -cp out redsens.red.ExperimentoGrafo
+```
+
+Si la consola muestra mal los acentos, ejecutar antes `chcp 65001`. Las
+decisiones y los resultados están en [el informe de M3](resultados/informe-m3-grafos.md).

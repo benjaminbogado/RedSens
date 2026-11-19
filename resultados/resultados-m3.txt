@@ -1,0 +1,158 @@
+
+=== 0. Red cargada desde datos/red_vial.txt ===
+12 localidades, 18 tramos (doble mano)
+
+=== 1. Representaciones ===
+Lista de adyacencia:
+[ 0] Córdoba           -> Villa Carlos Paz (36 km), Alta Gracia (39 km), Jesús María (51 km), Río Tercero (102 km), Villa María (146 km), San Francisco (205 km)
+[ 1] Villa Carlos Paz  -> Córdoba (36 km), Cosquín (24 km), Alta Gracia (35 km), Villa Dolores (140 km)
+[ 2] Alta Gracia       -> Córdoba (39 km), Villa Carlos Paz (35 km), Río Tercero (85 km)
+[ 3] Jesús María       -> Córdoba (51 km), Deán Funes (70 km)
+[ 4] Río Tercero       -> Córdoba (102 km), Alta Gracia (85 km), Villa María (70 km), Río Cuarto (110 km)
+[ 5] Villa María       -> Córdoba (146 km), Río Tercero (70 km), Río Cuarto (130 km), San Francisco (150 km)
+[ 6] San Francisco     -> Córdoba (205 km), Villa María (150 km)
+[ 7] Cosquín           -> Villa Carlos Paz (24 km), La Falda (20 km)
+[ 8] La Falda          -> Cosquín (20 km), Deán Funes (95 km)
+[ 9] Río Cuarto        -> Villa María (130 km), Río Tercero (110 km), Villa Dolores (210 km)
+[10] Deán Funes        -> Jesús María (70 km), La Falda (95 km)
+[11] Villa Dolores     -> Villa Carlos Paz (140 km), Río Cuarto (210 km)
+
+Matriz de adyacencia (km, '-' = sin ruta directa):
+         0    1    2    3    4    5    6    7    8    9   10   11
+[ 0]     0   36   39   51  102  146  205    -    -    -    -    -
+[ 1]    36    0   35    -    -    -    -   24    -    -    -  140
+[ 2]    39   35    0    -   85    -    -    -    -    -    -    -
+[ 3]    51    -    -    0    -    -    -    -    -    -   70    -
+[ 4]   102    -   85    -    0   70    -    -    -  110    -    -
+[ 5]   146    -    -    -   70    0  150    -    -  130    -    -
+[ 6]   205    -    -    -    -  150    0    -    -    -    -    -
+[ 7]     -   24    -    -    -    -    -    0   20    -    -    -
+[ 8]     -    -    -    -    -    -    -   20    0    -   95    -
+[ 9]     -    -    -    -  110  130    -    -    -    0    -  210
+[10]     -    -    -   70    -    -    -    -   95    -    0    -
+[11]     -  140    -    -    -    -    -    -    -  210    -    0
+Celdas de la matriz: 144, con ruta: 36 (25 %). Entradas en la lista: 36.
+
+=== 2. BFS por niveles desde San Francisco ===
+Nivel 0 (origen): San Francisco
+Nivel 1 (1 tramo): Córdoba, Villa María
+Nivel 2 (2 tramos): Villa Carlos Paz, Alta Gracia, Jesús María, Río Tercero, Río Cuarto
+Nivel 3 (3 tramos): Cosquín, Villa Dolores, Deán Funes
+Nivel 4 (4 tramos): La Falda
+Orden BFS (lista):  San Francisco > Córdoba > Villa María > Villa Carlos Paz > Alta Gracia > Jesús María > Río Tercero > Río Cuarto > Cosquín > Villa Dolores > Deán Funes > La Falda
+Orden BFS (matriz): San Francisco > Córdoba > Villa María > Villa Carlos Paz > Alta Gracia > Jesús María > Río Tercero > Río Cuarto > Cosquín > Villa Dolores > Deán Funes > La Falda
+
+=== 3. DFS: conexidad y corte de rutas ===
+Orden DFS (lista):  San Francisco > Córdoba > Villa Carlos Paz > Alta Gracia > Río Tercero > Villa María > Río Cuarto > Villa Dolores > Cosquín > La Falda > Deán Funes > Jesús María
+Orden DFS (matriz): San Francisco > Córdoba > Villa Carlos Paz > Alta Gracia > Río Tercero > Villa María > Río Cuarto > Villa Dolores > Cosquín > La Falda > Deán Funes > Jesús María
+¿Red conexa?: sí
+
+Corte: Córdoba – San Francisco (205 km)
+DFS: la red sigue siendo conexa; ninguna localidad queda aislada.
+Caminos mínimos desde la base que empeoran (Dijkstra):
+  Córdoba            205 km ->  296 km (+91)  ahora vía San Francisco > Villa María > Córdoba
+  Villa Carlos Paz   241 km ->  332 km (+91)  ahora vía San Francisco > Villa María > Córdoba > Villa Carlos Paz
+  Alta Gracia        244 km ->  305 km (+61)  ahora vía San Francisco > Villa María > Río Tercero > Alta Gracia
+  Jesús María        256 km ->  347 km (+91)  ahora vía San Francisco > Villa María > Córdoba > Jesús María
+  Cosquín            265 km ->  356 km (+91)  ahora vía San Francisco > Villa María > Córdoba > Villa Carlos Paz > Cosquín
+  La Falda           285 km ->  376 km (+91)  ahora vía San Francisco > Villa María > Córdoba > Villa Carlos Paz > Cosquín > La Falda
+  Deán Funes         326 km ->  417 km (+91)  ahora vía San Francisco > Villa María > Córdoba > Jesús María > Deán Funes
+  Villa Dolores      381 km ->  472 km (+91)  ahora vía San Francisco > Villa María > Córdoba > Villa Carlos Paz > Villa Dolores
+
+Cortando de a una cada una de las 18 rutas: ninguna desconecta la red.
+
+Con Córdoba – San Francisco ya cortada:
+Corte: Villa María – San Francisco (150 km)
+DFS: la red deja de ser conexa. Queda partida en dos:
+  con la base: San Francisco
+  sin acceso desde la base: Córdoba, Villa Carlos Paz, Alta Gracia, Jesús María, Río Tercero, Villa María, Cosquín, La Falda, Río Cuarto, Deán Funes, Villa Dolores
+  La base San Francisco queda aislada.
+
+=== 4. Dijkstra ===
+Desde Córdoba (caso de control):
+  Córdoba              0 km  Córdoba
+  Villa Carlos Paz    36 km  Córdoba > Villa Carlos Paz
+  Alta Gracia         39 km  Córdoba > Alta Gracia
+  Jesús María         51 km  Córdoba > Jesús María
+  Río Tercero        102 km  Córdoba > Río Tercero
+  Villa María        146 km  Córdoba > Villa María
+  San Francisco      205 km  Córdoba > San Francisco
+  Cosquín             60 km  Córdoba > Villa Carlos Paz > Cosquín
+  La Falda            80 km  Córdoba > Villa Carlos Paz > Cosquín > La Falda
+  Río Cuarto         212 km  Córdoba > Río Tercero > Río Cuarto
+  Deán Funes         121 km  Córdoba > Jesús María > Deán Funes
+  Villa Dolores      176 km  Córdoba > Villa Carlos Paz > Villa Dolores
+
+Desde San Francisco (base del grupo):
+  Córdoba            205 km  San Francisco > Córdoba
+  Villa Carlos Paz   241 km  San Francisco > Córdoba > Villa Carlos Paz
+  Alta Gracia        244 km  San Francisco > Córdoba > Alta Gracia
+  Jesús María        256 km  San Francisco > Córdoba > Jesús María
+  Río Tercero        220 km  San Francisco > Villa María > Río Tercero
+  Villa María        150 km  San Francisco > Villa María
+  San Francisco        0 km  San Francisco
+  Cosquín            265 km  San Francisco > Córdoba > Villa Carlos Paz > Cosquín
+  La Falda           285 km  San Francisco > Córdoba > Villa Carlos Paz > Cosquín > La Falda
+  Río Cuarto         280 km  San Francisco > Villa María > Río Cuarto
+  Deán Funes         326 km  San Francisco > Córdoba > Jesús María > Deán Funes
+  Villa Dolores      381 km  San Francisco > Córdoba > Villa Carlos Paz > Villa Dolores
+
+=== 5. Floyd: distancias mínimas entre todos los pares ===
+[ 0] Córdoba
+[ 1] Villa Carlos Paz
+[ 2] Alta Gracia
+[ 3] Jesús María
+[ 4] Río Tercero
+[ 5] Villa María
+[ 6] San Francisco
+[ 7] Cosquín
+[ 8] La Falda
+[ 9] Río Cuarto
+[10] Deán Funes
+[11] Villa Dolores
+         0    1    2    3    4    5    6    7    8    9   10   11
+[ 0]     0   36   39   51  102  146  205   60   80  212  121  176
+[ 1]    36    0   35   87  120  182  241   24   44  230  139  140
+[ 2]    39   35    0   90   85  155  244   59   79  195  160  175
+[ 3]    51   87   90    0  153  197  256  111  131  263   70  227
+[ 4]   102  120   85  153    0   70  220  144  164  110  223  260
+[ 5]   146  182  155  197   70    0  150  206  226  130  267  322
+[ 6]   205  241  244  256  220  150    0  265  285  280  326  381
+[ 7]    60   24   59  111  144  206  265    0   20  254  115  164
+[ 8]    80   44   79  131  164  226  285   20    0  274   95  184
+[ 9]   212  230  195  263  110  130  280  254  274    0  333  210
+[10]   121  139  160   70  223  267  326  115   95  333    0  279
+[11]   176  140  175  227  260  322  381  164  184  210  279    0
+Floyd = Dijkstra desde cada origen: sí
+
+=== 6. Plan de visitas desde San Francisco (localidades con estaciones críticas del M2) ===
+
+30 estaciones (semilla 3026): 5 críticas en 5 localidades
+Localidades a visitar: Villa Dolores, Jesús María, Cosquín, La Falda, Río Tercero
+Base: San Francisco
+ 1. San Francisco     -> Río Tercero        220 km (acum.  220)  vía San Francisco > Villa María > Río Tercero
+ 2. Río Tercero       -> Cosquín            144 km (acum.  364)  vía Río Tercero > Alta Gracia > Villa Carlos Paz > Cosquín
+ 3. Cosquín           -> La Falda            20 km (acum.  384)  vía Cosquín > La Falda
+ 4. La Falda          -> Jesús María        131 km (acum.  515)  vía La Falda > Cosquín > Villa Carlos Paz > Córdoba > Jesús María
+ 5. Jesús María       -> Villa Dolores      227 km (acum.  742)  vía Jesús María > Córdoba > Villa Carlos Paz > Villa Dolores
+ 6. Villa Dolores     -> San Francisco      381 km (acum. 1123)  vía Villa Dolores > Villa Carlos Paz > Córdoba > San Francisco
+Total: 1123 km
+Óptimo exacto (Held-Karp, solo referencia): 1051 km. Exceso del vecino más cercano: 72 km (6.9 %)
+
+1000 estaciones (semilla 3026): 206 críticas en 12 localidades
+Localidades a visitar: La Falda, Jesús María, Villa María, San Francisco, Villa Dolores, Deán Funes, Cosquín, Villa Carlos Paz, Río Tercero, Río Cuarto, Córdoba, Alta Gracia
+Base: San Francisco
+ 1. San Francisco     -> Villa María        150 km (acum.  150)  vía San Francisco > Villa María
+ 2. Villa María       -> Río Tercero         70 km (acum.  220)  vía Villa María > Río Tercero
+ 3. Río Tercero       -> Alta Gracia         85 km (acum.  305)  vía Río Tercero > Alta Gracia
+ 4. Alta Gracia       -> Villa Carlos Paz    35 km (acum.  340)  vía Alta Gracia > Villa Carlos Paz
+ 5. Villa Carlos Paz  -> Cosquín             24 km (acum.  364)  vía Villa Carlos Paz > Cosquín
+ 6. Cosquín           -> La Falda            20 km (acum.  384)  vía Cosquín > La Falda
+ 7. La Falda          -> Córdoba             80 km (acum.  464)  vía La Falda > Cosquín > Villa Carlos Paz > Córdoba
+ 8. Córdoba           -> Jesús María         51 km (acum.  515)  vía Córdoba > Jesús María
+ 9. Jesús María       -> Deán Funes          70 km (acum.  585)  vía Jesús María > Deán Funes
+10. Deán Funes        -> Villa Dolores      279 km (acum.  864)  vía Deán Funes > La Falda > Cosquín > Villa Carlos Paz > Villa Dolores
+11. Villa Dolores     -> Río Cuarto         210 km (acum. 1074)  vía Villa Dolores > Río Cuarto
+12. Río Cuarto        -> San Francisco      280 km (acum. 1354)  vía Río Cuarto > Villa María > San Francisco
+Total: 1354 km
+Óptimo exacto (Held-Karp, solo referencia): 1215 km. Exceso del vecino más cercano: 139 km (11.4 %)
