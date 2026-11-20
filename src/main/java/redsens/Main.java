@@ -13,6 +13,7 @@ import java.util.function.IntFunction;
 
 import redsens.indice.ArbolAVL;
 import redsens.indice.ArbolBinarioBusqueda;
+import redsens.compresion.DemostracionHuffman;
 import redsens.modelo.Estacion;
 import redsens.modelo.TipoEstacion;
 import redsens.registro.EstrategiaExploracion;
@@ -51,7 +52,8 @@ public class Main {
                 case 0 -> menuEstaciones();
                 case 1 -> menuM1();
                 case 2 -> menuM2();
-                case 3, 4, 5 -> System.out.println("Este módulo todavía no está disponible en esta versión.");
+                case 3, 5 -> System.out.println("Este módulo todavía no está disponible en esta versión.");
+                case 4 -> menuM4();
                 case 6 -> menuM6();
                 case 7 -> salir = true;
                 default -> System.out.println("Opción inválida. Elegí un número del menú.");
@@ -311,6 +313,20 @@ public class Main {
             Estacion estacion = recorrido.get(i);
             System.out.printf("%d. Número: %d | Código: %s%n",
                     i + 1, estacion.getNumero(), estacion.getCodigo());
+        }
+    }
+
+    private void menuM4() {
+        boolean volver = false;
+        while (!volver) {
+            System.out.println("\n--- M4: transmisión comprimida Huffman ---");
+            System.out.println("1. Ejecutar demostración y pruebas");
+            System.out.println("0. Volver al menú principal");
+            switch (leerEntero("Opción: ")) {
+                case 1 -> DemostracionHuffman.ejecutar();
+                case 0 -> volver = true;
+                default -> System.out.println("Opción inválida.");
+            }
         }
     }
 
