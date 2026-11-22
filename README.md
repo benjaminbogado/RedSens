@@ -16,8 +16,9 @@ java -cp out redsens.Main
 ```
 
 Si `javac` no se reconoce, agregar la carpeta `bin` del JDK al PATH o invocar
-ambos ejecutables mediante su ruta completa. `Main` por ahora muestra el
-mensaje de inicio; el menú integrado está pendiente.
+ambos ejecutables mediante su ruta completa. `Main` ofrece el menú de
+estaciones, M1, M2, M5 y verificaciones de M6. M3 y M4 siguen pendientes
+de integrar desde sus Pull Requests.
 
 ## Pruebas ejecutables
 
@@ -55,10 +56,10 @@ registro.eliminar("CBA-0347");
 ```
 
 Las clases pertenecen a `redsens.registro` y usan el modelo `Estacion` común.
-Esta entrega tiene capacidad fija: el integrante de M1 cuadrática deberá
-agregar esa estrategia, los umbrales de carga y el rehashing. El experimento
-comparativo de M1 también está pendiente. El contrato, las decisiones y la
-guía para continuar están en [el contrato de M1](resultados/contrato-m1-lineal.md).
+Los constructores de uno o dos argumentos conservan capacidad fija. La
+exploración cuadrática, los umbrales, el rehashing y el experimento de M1
+ya están implementados. El contrato histórico de la primera entrega está
+en [el contrato de M1](resultados/contrato-m1-lineal.md).
 
 ### Práctica manual de M1
 
@@ -94,3 +95,25 @@ Umbrales por defecto: 0,75 para lineal y 0,5 para cuadrática. Al superarlo,
 la tabla crece al primer primo mayor o igual al doble. Las decisiones, los
 resultados del experimento y su explicación están en
 [el informe de M1](resultados/informe-m1-tabla-hash.md).
+
+## M5 guardias rotativas
+
+Responsable: FEDE / Federico Villagra. Desde `Main`, elegir **5** y luego
+**1** para el calendario del grupo (N=12, M=3), **2** para otros parámetros,
+o **3** para el experimento de rendimiento. No requiere estaciones cargadas.
+Los técnicos se identifican con los números 1..N y el calendario numera
+los fines de semana en orden de asignación.
+
+```powershell
+java -cp out redsens.guardias.PruebaJosephus
+java -cp out redsens.guardias.ExperimentoJosephus
+```
+
+API: `JosephusLista.resolver(n, m)` y `JosephusArbol.resolver(n, m)`
+devuelven `CalendarioGuardias`, con `asignaciones()` y `suplente()`.
+M significa pasadas: se omiten M técnicos y se elimina al siguiente.
+El control N=5, M=1 da 2,4,1,5 y suplente 3.
+
+El [informe de M5](resultados/informe-m5-josephus.md) contiene decisiones,
+complejidades, resultados y reproducción. La [auditoría de entrega](resultados/pendientes-entrega.md)
+separa pendientes de código, integración y documentación.

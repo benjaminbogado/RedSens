@@ -12,6 +12,10 @@ import java.util.Scanner;
 import java.util.function.IntFunction;
 
 import redsens.indice.ArbolAVL;
+import redsens.guardias.CalendarioGuardias;
+import redsens.guardias.JosephusLista;
+import redsens.guardias.JosephusArbol;
+import redsens.guardias.ExperimentoJosephus;
 import redsens.indice.ArbolBinarioBusqueda;
 import redsens.modelo.Estacion;
 import redsens.modelo.TipoEstacion;
@@ -51,13 +55,47 @@ public class Main {
                 case 0 -> menuEstaciones();
                 case 1 -> menuM1();
                 case 2 -> menuM2();
-                case 3, 4, 5 -> System.out.println("Este módulo todavía no está disponible en esta versión.");
+                case 3, 4 -> System.out.println("Este módulo todavía no está disponible en esta versión.");
+                case 5 -> menuM5();
                 case 6 -> menuM6();
                 case 7 -> salir = true;
                 default -> System.out.println("Opción inválida. Elegí un número del menú.");
             }
         }
         System.out.println("RedSens finalizado.");
+    }
+
+    private void menuM5() {
+        boolean volver = false;
+        while (!volver) {
+            System.out.println("\n--- M5: guardias rotativas ---");
+            System.out.println("1. Calendario del grupo (N=12, M=3), ambas soluciones");
+            System.out.println("2. Calendario personalizado, ambas soluciones");
+            System.out.println("3. Experimento de rendimiento obligatorio");
+            System.out.println("0. Volver");
+            switch (leerEntero("Opción: ")) {
+                case 1 -> mostrarGuardias(12, 3);
+                case 2 -> mostrarGuardias(leerEntero("Cantidad de técnicos N: "), leerEntero("Pasadas M: "));
+                case 3 -> ExperimentoJosephus.main(new String[0]);
+                case 0 -> volver = true;
+                default -> System.out.println("Opción inválida.");
+            }
+        }
+    }
+
+    private void mostrarGuardias(int n, int m) {
+        try {
+            CalendarioGuardias lista = JosephusLista.resolver(n, m);
+            CalendarioGuardias arbol = JosephusArbol.resolver(n, m);
+            if (!lista.equals(arbol)) { throw new IllegalStateException("Las soluciones no coinciden"); }
+            System.out.println("N=" + n + ", M=" + m + ". Ambas soluciones coinciden.");
+            for (int i = 0; i < lista.asignaciones().size(); i++) {
+                System.out.println("Fin de semana " + (i + 1) + ": técnico " + lista.asignaciones().get(i));
+            }
+            System.out.println("Suplente de emergencias: técnico " + lista.suplente());
+        } catch (IllegalArgumentException e) {
+            System.out.println("No se pudo generar el calendario: " + e.getMessage());
+        }
     }
 
     private void menuEstaciones() {

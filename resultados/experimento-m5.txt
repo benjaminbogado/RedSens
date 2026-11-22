@@ -1,0 +1,9 @@
+M5 Josephus | Java 23 | Windows 11 amd64
+3 rondas de calentamiento, mediana de 5; incluye construcci�n y calendario.
+N;M;lista_ms;arbol_ms;lista/arbol;suplente
+1000;3;0.360;0.234;1.54;323
+1000;1000;7.132;0.217;32.84;154
+10000;3;2.923;1.574;1.86;3254
+10000;1000;23.857;1.506;15.84;4342
+100000;3;2.942;12.348;0.24;32942
+100000;1000;375.516;22.088;17.00;12442
