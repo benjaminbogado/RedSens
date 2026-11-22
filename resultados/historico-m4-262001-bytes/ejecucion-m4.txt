@@ -1,0 +1,53 @@
+Caso WWXWYZWX
+Bits originales: 64
+Bits Huffman útiles: 14
+Sin prefijos: OK
+Tabla de códigos:
+Símbolo | Frecuencia | Código
+'W' | 4 | 0
+'X' | 2 | 10
+'Y' | 1 | 110
+'Z' | 1 | 111
+ArchivoHuffman vacío: compresión/descompresión byte por byte OK
+ArchivoHuffman un símbolo: compresión/descompresión byte por byte OK
+ArchivoHuffman UTF-8: compresión/descompresión byte por byte OK
+Archivo de mediciones
+Líneas: 5000
+Bytes originales: 262001
+Bits originales (8 por byte): 2096008
+Bits útiles Huffman: 1133111
+Relleno último byte: 1
+Cabecera: 116 bytes
+Payload: 141639 bytes
+Archivo comprimido real: 141755 bytes
+Porcentaje de ahorro real: 45.90%
+Igualdad byte por byte: OK
+Tabla de códigos:
+Símbolo | Frecuencia | Código
+LF | 5000 | 101010
+CR | 5000 | 101011
+'-' | 15495 | 1000
+'.' | 10000 | 10110
+'0' | 19199 | 1001
+'1' | 22302 | 000
+'2' | 20832 | 1111
+'3' | 14820 | 0101
+'4' | 9363 | 10100
+'5' | 7590 | 01001
+'6' | 11944 | 0010
+'7' | 6982 | 01000
+'8' | 6647 | 00110
+'9' | 6827 | 00111
+':' | 5000 | 101110
+';' | 30000 | 011
+'=' | 20000 | 1100
+'A' | 10000 | 11010
+'B' | 10000 | 11011
+'C' | 5000 | 101111
+'H' | 5000 | 111000
+'P' | 5000 | 111001
+'T' | 10000 | 11101
+Cabecera inválida rechazada: OK
+Payload truncado rechazado: OK
+Descompresión en proceso Java independiente: OK
+Proceso independiente: bytes=262001, SHA-256=7d45a477540392954c4abbb743c10f5745b0751c72335e557e426f1321402bda

@@ -1,0 +1,37 @@
+# RedSens - M3: grafo de referencia del enunciado (sección 2, M3)
+# 12 localidades (vértices) y 18 tramos (aristas). Grafo no dirigido y ponderado (km).
+# Formato:
+#   localidad;Nombre
+#   ruta;Origen;Destino;km
+
+localidad;Córdoba
+localidad;Villa Carlos Paz
+localidad;Alta Gracia
+localidad;Jesús María
+localidad;Río Tercero
+localidad;Villa María
+localidad;San Francisco
+localidad;Cosquín
+localidad;La Falda
+localidad;Río Cuarto
+localidad;Deán Funes
+localidad;Villa Dolores
+
+ruta;Córdoba;Villa Carlos Paz;36
+ruta;Córdoba;Alta Gracia;39
+ruta;Córdoba;Jesús María;51
+ruta;Córdoba;Río Tercero;102
+ruta;Córdoba;Villa María;146
+ruta;Córdoba;San Francisco;205
+ruta;Villa Carlos Paz;Cosquín;24
+ruta;Cosquín;La Falda;20
+ruta;Villa Carlos Paz;Alta Gracia;35
+ruta;Alta Gracia;Río Tercero;85
+ruta;Río Tercero;Villa María;70
+ruta;Villa María;Río Cuarto;130
+ruta;Río Tercero;Río Cuarto;110
+ruta;Jesús María;Deán Funes;70
+ruta;La Falda;Deán Funes;95
+ruta;Villa Carlos Paz;Villa Dolores;140
+ruta;Villa Dolores;Río Cuarto;210
+ruta;Villa María;San Francisco;150

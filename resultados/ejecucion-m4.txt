@@ -1,0 +1,24 @@
+M4 — Ejecución regenerada desde la entrada versionada
+Fecha: 2026-11-22
+Java: 21.0.11
+
+Entrada: datos/mediciones_grupo3.txt
+Líneas UTF-8: 5000 (requisito: al menos 5000)
+Tamaño original: 257001 bytes (2056008 bits, 8 por byte)
+SHA-256 original: f78d135dbdbfac1324c381259696e60b10025a310b79899d75be9991a8917111
+
+Salida comprimida: resultados/mediciones-m4.huff
+Tamaño del contenedor: 137376 bytes
+Bits Huffman útiles: 1098111
+Bits de relleno: 1
+Cabecera: 112 bytes
+Payload: 137264 bytes
+Ahorro respecto del tamaño original: 46,55%
+
+Salida recuperada: resultados/mediciones-m4-descomprimidas.txt
+Tamaño recuperado: 257001 bytes
+SHA-256 recuperado: f78d135dbdbfac1324c381259696e60b10025a310b79899d75be9991a8917111
+Igualdad byte por byte con la entrada: OK
+
+Caso fijo WWXWYZWX: 64 bits originales, 14 bits Huffman útiles,
+tabla sin prefijos y recuperación exacta: OK
