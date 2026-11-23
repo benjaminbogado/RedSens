@@ -2,25 +2,26 @@
 
 Grupo 3 · Semilla 3026 · Capacidad inicial de la tabla hash 17 · Base San Francisco · M de Josephus 3
 
-Responsable del informe: Tobias Zapiola. Reúne los experimentos obligatorios del enunciado que ya
-están implementados en `main` (M1 y M2) y deja preparado el lugar del experimento de M5. No se
-incluyen resultados de módulos que todavía no estén implementados.
+Responsable del informe: Tobias Zapiola. Reúne los tres experimentos obligatorios del enunciado
+(M1, M2 y M5), que M6 pide juntar en un informe de rendimiento. Todos los números salen de
+corridas reales guardadas en el repositorio.
 
 | Experimento | Módulo | Estado |
 |---|---|---|
 | Exploración lineal vs. cuadrática con 10.000 estaciones | M1 | Medido |
 | ABB vs. AVL con 1.000, 5.000 y 10.000 estaciones, en orden y al azar | M2 | Medido |
-| Lista enlazada vs. ABB con k-ésimo para N = 1.000, 10.000 y 100.000 | M5 | Pendiente: M5 todavía no está implementado |
+| Lista enlazada vs. ABB con k-ésimo para N = 1.000, 10.000 y 100.000 | M5 | Medido (código en revisión, PR #14) |
 
 ## 1. Método
 
 - **Datos:** estaciones generadas por `GeneradorDatos` (M6) con `java.util.Random` y la semilla 3026.
   Los códigos `CBA-NNNN` son únicos, así que hay como máximo 10.000 estaciones.
 - **Tiempos:** `System.nanoTime()`, con la generación de datos y las impresiones fuera de la medición.
-- **Dos máquinas:** los experimentos se corrieron en una Mac (Java 21, macOS aarch64) y en una PC
-  con Windows 11 (Java 24, amd64). Los valores deterministas (colisiones, sondeos, rehashings y
-  alturas) dan **idénticos** en las dos, como corresponde a una semilla fija. Los tiempos cambian con
-  la máquina; se informan los de la Mac y se comentan las diferencias.
+- **Dos máquinas:** los experimentos se corrieron en una Mac (Java 21, macOS aarch64) y en PCs
+  con Windows 11 (Java 24 para M1 y M2, Java 23 para M5, amd64). Los valores deterministas
+  (colisiones, sondeos, rehashings, alturas y suplentes de Josephus) dan **idénticos** en las dos,
+  como corresponde a una semilla y a parámetros fijos. Los tiempos cambian con la máquina; se
+  informan los dos y se comentan las diferencias.
 - **Verificación previa:** antes de medir, cada experimento comprueba que las estructuras tengan
   todas las estaciones y devuelvan lo esperado.
 
@@ -32,6 +33,8 @@ Salidas completas guardadas en el repositorio:
 | `resultados/experimento-m1-luca.txt` | M1 en Windows |
 | `resultados/experimento-m2.txt` | M2 en Mac |
 | `resultados/experimento-m2-luca.txt` | M2 en Windows |
+| `resultados/experimento-m5.txt` (PR #14) | M5 en Windows |
+| Sección 4.1 de este informe | M5 en Mac |
 
 ## 2. M1 · Tabla hash: exploración lineal vs. cuadrática
 
@@ -137,22 +140,51 @@ problema que el enunciado advierte para Python, que limita la recursión a unas 
 - **Decisión de diseño.** Como los datos del censo llegan ordenados, el índice del sistema es el AVL.
   El menú usa el AVL para el listado por rango y el reporte de críticas.
 
-## 4. M5 · Josephus: lista enlazada vs. ABB con k-ésimo (pendiente)
+## 4. M5 · Josephus: lista enlazada vs. ABB con k-ésimo
 
-El enunciado pide medir las dos implementaciones con N = 1.000, 10.000 y 100.000 y al menos dos
-valores de M, y explicar en qué casos la diferencia se vuelve importante. M5 todavía no está
-implementado, así que esta sección queda para completar con la salida real del experimento:
+N técnicos en ronda; se omiten M y el siguiente queda de guardia. Se comparan las dos soluciones
+de la lectura: `JosephusLista` (`LinkedList` e `Iterator`, O(N·M)) y `JosephusArbol` (ABB propio que
+guarda el tamaño de cada subárbol para obtener el k-ésimo, O(N log N)). Se usan M = 3 (el del grupo)
+y M = 1.000 (muchas pasadas). Cada escenario tiene 3 rondas de calentamiento y se informa la mediana
+de 5; el tiempo incluye construir la estructura y la lista de asignaciones. En cada ronda se
+verifica que los dos calendarios sean idénticos. Implementación de Federico Villagra (PR #14), clase
+`redsens.guardias.ExperimentoJosephus`.
 
-| N | M | Lista enlazada (ms) | ABB con k-ésimo (ms) |
-|---:|---:|---:|---:|
-| 1.000 | 3 | — | — |
-| 1.000 | _otro_ | — | — |
-| 10.000 | 3 | — | — |
-| 10.000 | _otro_ | — | — |
-| 100.000 | 3 | — | — |
-| 100.000 | _otro_ | — | — |
+**Casos de verificación:** N = 5 y M = 1 asigna 2, 4, 1, 5 y deja al 3 de suplente, como en la
+lectura. Para el grupo (N = 12, M = 3): 4, 8, 12, 5, 10, 3, 11, 7, 6, 9, 2, con el técnico 1 de
+suplente. `PruebaJosephus` hace 34.745 verificaciones, todas correctas.
 
-Complejidad esperada según la lectura: O(N·M) para la lista enlazada y O(N log N) para el ABB.
+### 4.1 Resultados
+
+| N | M | Lista Mac (ms) | Árbol Mac (ms) | Lista / árbol Mac | Lista Windows (ms) | Árbol Windows (ms) | Lista / árbol Windows | Suplente |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1.000 | 3 | 0,182 | 0,147 | 1,24 | 0,360 | 0,234 | 1,54 | 323 |
+| 1.000 | 1.000 | 1,570 | 0,129 | 12,16 | 7,132 | 0,217 | 32,84 | 154 |
+| 10.000 | 3 | 0,200 | 1,035 | 0,19 | 2,923 | 1,574 | 1,86 | 3.254 |
+| 10.000 | 1.000 | 16,085 | 1,164 | 13,83 | 23,857 | 1,506 | 15,84 | 4.342 |
+| 100.000 | 3 | 1,974 | 10,373 | 0,19 | 2,942 | 12,348 | 0,24 | 32.942 |
+| 100.000 | 1.000 | 203,360 | 15,757 | 12,91 | 375,516 | 22,088 | 17,00 | 12.442 |
+
+Mac: Java 21, macOS aarch64, corrida del 23/11. Windows: Java 23, Windows 11 amd64
+(`resultados/experimento-m5.txt` del PR #14). "Lista / árbol" mayor que 1 significa que el árbol
+fue más rápido. Los suplentes son idénticos en las dos máquinas.
+
+### 4.2 Análisis
+
+- **Con M grande gana el árbol, y por mucho.** Con M = 1.000 la lista tiene que avanzar 1.000
+  posiciones por cada técnico que sale, mientras que el árbol calcula directamente la posición
+  (`(índice + M) % restantes`) y baja hasta ella en O(log N). Con 100.000 técnicos el árbol fue
+  13 veces más rápido en Mac y 17 en Windows.
+- **Con M chico la lista es competitiva, o incluso mejor.** Con M = 3 la lista hace unas 3·N
+  operaciones simples, mientras que el árbol hace unas N·log₂ N (≈ 17 por técnico con N = 100.000).
+  Como 3 es menor que log₂ N, la lista gana con N grande: con 100.000 técnicos fue entre 4 y 5 veces
+  más rápida en las dos máquinas.
+- **Cuándo importa la diferencia.** La comparación real es M contra log₂ N: si M es mucho mayor que
+  log₂ N, conviene el árbol; si M es chico, la lista alcanza. El parámetro del grupo (M = 3) cae del
+  lado de la lista, pero el árbol garantiza un costo que no depende de M.
+- **Variaciones.** Con N = 10.000 y M = 3, la lista ganó en la Mac y perdió en Windows. Con tiempos
+  de 1 a 3 ms, el JIT, la caché y la carga del sistema pesan tanto como el algoritmo. Las tendencias
+  con M = 1.000 y con N = 100.000 coinciden en las dos máquinas.
 
 ## 5. Cómo reproducir
 
@@ -161,11 +193,14 @@ Desde la raíz del repositorio, con el proyecto compilado (ver `README.md`):
 ```bash
 java -cp out redsens.registro.ExperimentoTablaHash 3026
 java -cp out redsens.indice.ExperimentoArboles 3026
+java -cp out redsens.guardias.ExperimentoJosephus    # cuando se integre el PR #14
 ```
 
+El experimento de M5 también está en el menú: opción `5` → `3`.
+
 Los valores deterministas tienen que coincidir exactamente con este informe. Los tiempos dependen de
-la máquina; en la Mac, una nueva corrida (21/11) dio diferencias de pocos puntos porcentuales sin
-cambiar ninguna conclusión.
+la máquina; en la Mac, una nueva corrida de M1 y M2 (21/11) dio diferencias de pocos puntos
+porcentuales sin cambiar ninguna conclusión.
 
 ## 6. Conclusiones
 
@@ -175,4 +210,6 @@ cambiar ninguna conclusión.
 - **M2:** el ABB depende del orden de llegada de los datos y, con el censo ordenado, degenera en una
   lista. El AVL garantiza O(log n) en cualquier orden, a cambio de un costo chico por guardar alturas
   y rotar.
-- **M5:** pendiente de implementación.
+- **M5:** la mejor solución depende de M. El ABB con k-ésimo garantiza O(N log N) sin importar M y
+  gana claramente con muchas pasadas; con M chico, como el M = 3 del grupo, la lista enlazada es
+  igual o más rápida.

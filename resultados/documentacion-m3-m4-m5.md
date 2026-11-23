@@ -3,14 +3,11 @@
 Resumen breve de los módulos de la segunda etapa, armado a partir de lo que entregó cada
 responsable. El detalle completo está en los documentos de cada módulo.
 
-| Módulo | Responsable | Estado (21/11) | Detalle |
+| Módulo | Responsable | Estado (23/11) | Detalle |
 |---|---|---|---|
-| M3 · Red vial | Franco Bossio | Implementado, en revisión: PR #11 (`feat/grafo-red`) | `resultados/informe-m3-grafos.md` (en la rama) |
-| M4 · Transmisión | Luca Agustín Pepino | Implementado, en revisión: PR #12 (`feat/huffman`) | `README_M4.md` (en la rama) |
-| M5 · Guardias | A definir | Sin implementar | — |
-
-Mientras los PR no se integren, M3 y M4 no están en `main`. En el menú, las opciones 3 y 4 siguen
-diciendo "todavía no está disponible".
+| M3 · Red vial | Franco Bossio | En `main` (integrado con el PR #15) | [informe de M3](informe-m3-grafos.md) |
+| M4 · Transmisión | Luca Agustín Pepino | En `main` (integrado con el PR #15) | [README de M4](../README_M4.md) |
+| M5 · Guardias | Federico Villagra | Implementado, en revisión: PR #14 (`codex/modulo-5-josephus`) | `resultados/informe-m5-josephus.md` (en el PR) |
 
 ## M3 · Red vial y planificación de recorridos
 
@@ -35,8 +32,8 @@ ni librerías de grafos.
 **Integración:** opción 3 del menú. La opción 9 de ese submenú arma el plan de visitas con el
 reporte de estaciones críticas del AVL (M2), como pide el enunciado.
 
-**Resultados informados por el responsable:**
-- 82 verificaciones en `PruebaGrafo`, todas correctas.
+**Resultados:**
+- `PruebaGrafo`: 88 verificaciones, todas correctas.
 - BFS desde San Francisco: a 1 tramo, Córdoba y Villa María.
 - Dijkstra desde San Francisco: Villa Dolores es la más lejana, a 381 km.
 - La red es conexa y ningún corte de un solo tramo la desconecta. Para aislar San Francisco hay que
@@ -64,11 +61,13 @@ permitidos por el enunciado para M4. Los empates se resuelven en forma determini
 
 **Integración:** opción 4 del menú.
 
-**Resultados informados por el responsable:**
+**Resultados** (`resultados/ejecucion-m4.txt`):
 - Caso de verificación `WWXWYZWX`: 64 bits originales y **14 bits** con Huffman, sin prefijos repetidos.
-- Archivo de 5.000 mediciones: 262.001 bytes originales y 141.755 bytes comprimidos (cabecera
-  incluida), un **ahorro de 45,90 %**.
-- El archivo recuperado es idéntico byte por byte al original, incluso descomprimido en otro proceso.
+- Archivo de 5.000 mediciones (`datos/mediciones_grupo3.txt`): 257.001 bytes originales y
+  137.376 bytes comprimidos (cabecera incluida), un **ahorro de 46,55 %**.
+- El archivo recuperado es idéntico byte por byte al original (mismo SHA-256).
+- Una versión anterior del archivo de mediciones tenía 262.001 bytes porque usaba saltos de línea
+  de Windows (CR + LF); su corrida quedó en `resultados/historico-m4-262001-bytes/`.
 
 **¿Por qué no comprime más?** El archivo usa pocos símbolos, pero los dígitos aparecen con
 frecuencias parecidas (entre unas 6.600 y 22.300 veces cada uno) y ninguno domina, así que sus
@@ -77,12 +76,30 @@ mucho más.
 
 ## M5 · Guardias rotativas (Josephus)
 
-**Estado:** sin implementar. Esto es lo que pide el enunciado y lo que hay que entregar:
+**Problema:** asignar las guardias de fin de semana de forma justa y verificable.
 
-- Solución simple con lista enlazada e iterador, O(N·M).
-- Solución eficiente con un ABB que permita obtener el k-ésimo elemento, O(N log N).
-- Calendario de guardias para N = 12 técnicos con M = 3 (parámetro del grupo); el último que queda
-  es el suplente.
-- Caso de verificación de la lectura: con N = 5 y M = 1 salen 2, 4, 1, 5 y queda el 3.
-- Experimento: tiempos de las dos versiones para N = 1.000, 10.000 y 100.000 con al menos dos
-  valores de M. Sus resultados van en la sección 4 de `resultados/informe-rendimiento.md`.
+**Qué hace:** N técnicos en ronda; se omiten M y el siguiente queda de guardia y sale de la ronda.
+El orden de salida es el calendario y el último que queda es el suplente.
+
+| Clase (`redsens.guardias`) | Responsabilidad |
+|---|---|
+| `JosephusLista` | Solución simple con `LinkedList` e `Iterator`, O(N·M) |
+| `ArbolOrdenEstadistico` | ABB propio que guarda el tamaño de cada subárbol para seleccionar y eliminar el k-ésimo |
+| `JosephusArbol` | Solución eficiente sobre ese árbol, O(N log N) |
+| `CalendarioGuardias` | Resultado: asignaciones en orden y suplente |
+| `ExperimentoJosephus` | Experimento obligatorio de rendimiento |
+
+**Decisiones:** el árbol se construye ya balanceado (tomando el punto medio) y después solo borra,
+así que su altura nunca supera la inicial, O(log N), sin necesidad de rotaciones. No se reutiliza el
+AVL de estaciones porque guarda otros datos y no sabe contar posiciones.
+
+**Integración:** opción 5 del menú (con el PR #14): calendario del grupo, calendario con otros
+parámetros y experimento.
+
+**Resultados:**
+- Caso de la lectura: N = 5 y M = 1 asigna 2, 4, 1, 5 y deja al **3** de suplente.
+- Calendario del grupo (N = 12, M = 3): 4, 8, 12, 5, 10, 3, 11, 7, 6, 9, 2, con el técnico **1** de suplente.
+- `PruebaJosephus`: 34.745 verificaciones correctas.
+- Experimento: con M = 1.000 el árbol es entre 12 y 33 veces más rápido; con M = 3 y N grande la
+  lista es más rápida. Tablas y análisis en la sección 4 del
+  [informe de rendimiento](informe-rendimiento.md).
